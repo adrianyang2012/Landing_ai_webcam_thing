@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang=“en”>
+<head>
+    <meta charset=“UTF-8">
+    <meta name=“viewport” content=“width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+    <style>
+        video, canvas {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+        }
+        #captureButton {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h2>Capture a Picture</h2>
+<video id=“video” autoplay></video>
+<button id=“captureButton”>Capture</button>
+<canvas id=“canvas”></canvas>
+<script>
+    const video = document.getElementById(‘video’);
+    const canvas = document.getElementById(‘canvas’);
+    const context = canvas.getContext(‘2d’);
+    const captureButton = document.getElementById(‘captureButton’);
+    // Request access to the user’s camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(error => {
+            console.error(‘Error accessing the camera:’, error);
+            alert(‘Unable to access the camera. Please check your camera settings.’);
+        });
+    // Capture the image when the button is clicked
+    captureButton.addEventListener(‘click’, () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Optionally, convert the canvas image to a data URL (base64) for further processing or upload
+        const imageDataURL = canvas.toDataURL(‘image/png’);
+        console.log(‘Captured Image Data URL:’, imageDataURL);
+        // Example: Display the captured image in an <img> tag
+        // const img = document.createElement(‘img’);
+        // img.src = imageDataURL;
+        // document.body.appendChild(img);
+    });
+</script>
+</body>
+</html>
